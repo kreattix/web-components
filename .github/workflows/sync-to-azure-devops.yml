@@ -1,0 +1,22 @@
+name: Sync to Azure DevOps
+
+on:
+  push:
+  pull_request:
+    types: [closed]
+  create:
+
+jobs:
+  sync-to-azure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to the repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Push changes to Azure Devops
+        run: |
+          echo $AZURE_DEVOPS_PAT | git -c http.extraheader="AUTHORIZATION: basic $(echo -n ":$AZURE_DEVOPS_PAT" | base64)" push --force --set-upstream https://dev.azure.com/kreattix/Web%20Components/_git/web-components ${{ github.ref }}:${{ github.ref }}
+        env:
+          AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
