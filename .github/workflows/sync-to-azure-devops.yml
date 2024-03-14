@@ -17,6 +17,6 @@ jobs:
 
       - name: Push changes to Azure Devops
         run: |
-          echo $AZURE_DEVOPS_PAT | git -c http.extraheader="AUTHORIZATION: basic $(echo -n ":$AZURE_DEVOPS_PAT" | base64)" push --force --set-upstream https://dev.azure.com/kreattix/Web Components/_git/web-components ${{ github.ref }}:${{ github.ref }}
+          echo $AZURE_DEVOPS_PAT | git -c http.extraheader="AUTHORIZATION: basic $(echo -n ":$AZURE_DEVOPS_PAT" | base64)" push --force --set-upstream https://dev.azure.com/kreattix/Web%20Components/_git/web-components ${{ github.ref }}:${{ github.ref }}
         env:
           AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
