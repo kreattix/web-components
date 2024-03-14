@@ -2,8 +2,8 @@ name: Sync to Azure DevOps
 
 on:
   push:
-  create:
-  delete:
+    branches:
+      - main
 
 jobs:
   sync-to-azure:
@@ -15,18 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: Push changes to Azure Devops
-        if: github.event_name != 'delete'
         run: |
           echo $AZURE_DEVOPS_PAT | git -c http.extraheader="AUTHORIZATION: basic $(echo -n ":$AZURE_DEVOPS_PAT" | base64)" push --force --set-upstream https://dev.azure.com/kreattix/Web%20Components/_git/web-components ${{ github.ref }}:${{ github.ref }}
-        env:
-          AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-
-      - name: Delete branch from Azure DevOps
-        if: github.event_name == 'delete' && github.ref_type == 'branch' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master'
-        run: |
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          if [[ "$BRANCH_NAME" != "main" && "$BRANCH_NAME" != "master" ]]; then
-          echo $AZURE_DEVOPS_PAT | git -c http.extraheader="AUTHORIZATION: basic $(echo -n ":$AZURE_DEVOPS_PAT" | base64)" push https://dev.azure.com/kreattix/Web%20Components/_git/web-components --delete $BRANCH_NAME
-          fi
         env:
           AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
