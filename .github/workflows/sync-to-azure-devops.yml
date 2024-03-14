@@ -8,6 +8,7 @@ on:
 
 jobs:
   sync-to-azure:
+    if: github.event.pull_request.merged == true || github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to the repo
