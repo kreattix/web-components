@@ -2,14 +2,11 @@ name: Sync to Azure DevOps
 
 on:
   push:
-  pull_request:
-    types: [closed]
   create:
   delete:
 
 jobs:
   sync-to-azure:
-    if: github.event.pull_request.merged == true || github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to the repo
@@ -18,6 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: Push changes to Azure Devops
+        if: github.event_name != 'delete'
         run: |
           echo $AZURE_DEVOPS_PAT | git -c http.extraheader="AUTHORIZATION: basic $(echo -n ":$AZURE_DEVOPS_PAT" | base64)" push --force --set-upstream https://dev.azure.com/kreattix/Web%20Components/_git/web-components ${{ github.ref }}:${{ github.ref }}
         env:
